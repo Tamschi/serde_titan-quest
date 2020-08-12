@@ -8,10 +8,11 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = { version = "1.0.115", features = ["derive"] }
-wyz = "0.2.0"
-serde_raw = { path = "../serde_raw" }
 encoding = "0.2.33"
+serde = { version = "1.0.115", features = ["derive"] }
+serde_raw = { path = "../serde_raw" }
+serde-seeded = { path = "../serde-seeded" }
+wyz = "0.2.0"
 
 [dev-dependencies]
 serde-object = "0.0.0-alpha.0"
