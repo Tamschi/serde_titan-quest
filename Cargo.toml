@@ -12,6 +12,7 @@ encoding = "0.2.33"
 serde = { version = "1.0.115", features = ["derive"] }
 serde_raw = { path = "../serde_raw" }
 serde-seeded = { path = "../serde-seeded" }
+raw-seeders = { path = "../raw-seeders" }
 wyz = "0.2.0"
 
 [dev-dependencies]
