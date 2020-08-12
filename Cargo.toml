@@ -14,6 +14,8 @@ serde_raw = { path = "../serde_raw" }
 serde-seeded = { path = "../serde-seeded" }
 raw-seeders = { path = "../raw-seeders" }
 wyz = "0.2.0"
+enum-ordinalize = "3.1.8"
+cast = "0.2.3"
 
 [dev-dependencies]
 serde-object = "0.0.0-alpha.0"
