@@ -1,0 +1,17 @@
+[package]
+name = "serde_titan-quest"
+version = "0.0.0-dev"
+authors = ["Tamme Schichler <tamme@schichler.dev>"]
+edition = "2018"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = { version = "1.0.115", features = ["derive"] }
+wyz = "0.2.0"
+serde_raw = { path = "../serde_raw" }
+encoding = "0.2.33"
+
+[dev-dependencies]
+serde-object = "0.0.0-alpha.0"
