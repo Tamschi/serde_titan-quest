@@ -133,7 +133,7 @@ impl<'de, Source: Read + Seek> de::MapAccess<'de> for FilesAccess<'de, Source> {
 
         let data: Vec<u8> = Vec::with_capacity(asset_info.asset_length as usize);
         for part in parts {
-            todo!()
+            todo!("Read asset parts into data")
         }
 
         seed.deserialize(data.into_deserializer())
