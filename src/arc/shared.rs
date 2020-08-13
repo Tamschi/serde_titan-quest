@@ -84,6 +84,7 @@ impl AssetInfo {
 
 #[derive(Clone, Copy, Ordinalize)]
 pub enum Storage {
+    TODODeleted = 0,
     Uncompressed = 1,
     Compressed = 3,
 }

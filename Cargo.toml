@@ -8,14 +8,15 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+cast = "0.2.3"
 encoding = "0.2.33"
+enum-ordinalize = "3.1.8"
+miniz_oxide = "0.4.0"
+raw-seeders = { path = "../raw-seeders" }
 serde = { version = "1.0.115", features = ["derive"] }
 serde_raw = { path = "../serde_raw" }
 serde-seeded = { path = "../serde-seeded" }
-raw-seeders = { path = "../raw-seeders" }
 wyz = "0.2.0"
-enum-ordinalize = "3.1.8"
-cast = "0.2.3"
 
 [dev-dependencies]
 serde-backtrace = { path = "../serde-backtrace" }

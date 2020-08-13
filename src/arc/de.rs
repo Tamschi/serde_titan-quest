@@ -1,5 +1,6 @@
 use {
     super::shared::{cp1252, AssetInfo, Header, PartInfo},
+    miniz_oxide::inflate::decompress_to_vec,
     serde::{
         de::{self, Error, IntoDeserializer as _},
         forward_to_deserialize_any,
@@ -108,29 +109,34 @@ impl<'de, Source: Read + Seek> de::MapAccess<'de> for FilesAccess<'de, Source> {
             parts.push(part)
         }
 
-        let compressed_length = parts.iter().map(|p| p.compressed_length).sum();
-        if asset_info.compressed_length != compressed_length {
-            return Err(de::Error::custom(format_args!(
-                "Expected compressed asset length of {} but {} parts add up to {}",
-                asset_info.compressed_length,
-                parts.len(),
-                compressed_length
-            )));
-        }
-
-        let asset_length = parts.iter().map(|p| p.data_length).sum();
-        if asset_info.asset_length != asset_length {
-            return Err(de::Error::custom(format_args!(
-                "Expected asset length of {} but {} parts add up to {}",
-                asset_info.asset_length,
-                parts.len(),
-                asset_length
-            )));
-        }
-
-        let data: Vec<u8> = Vec::with_capacity(asset_info.asset_length as usize);
-        for part in parts {
-            // todo!("Read asset parts into data")
+        let mut data: Vec<u8> = vec![];
+        match asset_info.storage {
+            super::shared::Storage::TODODeleted => {}
+            super::shared::Storage::Uncompressed => {
+                self.source
+                    .seek(SeekFrom::Start(self.start + asset_info.offset as u64))
+                    .map_err(de::Error::custom)?;
+                data.resize_with(asset_info.asset_length as usize, Default::default);
+                self.source
+                    .read_exact(&mut data)
+                    .map_err(de::Error::custom)?;
+            }
+            super::shared::Storage::Compressed => {
+                for part in parts {
+                    let mut compressed: Vec<u8> =
+                        Vec::with_capacity(part.compressed_length as usize - 2);
+                    self.source
+                        .seek(SeekFrom::Start(self.start + part.offset as u64 + 2 /* "Skip zlib flags", TODO: Do this more nicely. */))
+                        .map_err(de::Error::custom)?;
+                    compressed.resize_with(part.compressed_length as usize, Default::default);
+                    self.source
+                        .read_exact(&mut compressed)
+                        .map_err(de::Error::custom)?;
+                    let mut decompressed = decompress_to_vec(&compressed)
+                        .map_err(|e| de::Error::custom(format_args!("{:?}", e)))?;
+                    data.append(&mut decompressed);
+                }
+            }
         }
 
         seed.deserialize(data.into_deserializer())
