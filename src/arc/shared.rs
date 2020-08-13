@@ -4,7 +4,7 @@ use enum_ordinalize::Ordinalize;
 use raw_seeders::{literal, LittleEndian};
 use serde::{de, ser};
 use serde_seeded::{seed, seeded};
-use std::{borrow::Cow, convert::TryInto, fmt::Display, marker::PhantomData};
+use std::{borrow::Cow, fmt::Display, marker::PhantomData};
 
 #[derive(Debug, seed, seeded)]
 pub struct Header {

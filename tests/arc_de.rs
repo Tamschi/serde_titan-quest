@@ -1,8 +1,13 @@
-use std::{fs::File, path::Path};
-use {serde_object::Object, serde_titan_quest::arc, test_case::test_case};
+use {
+    serde_backtrace::serde_backtrace,
+    serde_object::Object,
+    serde_titan_quest::arc,
+    std::{fs::File, path::Path},
+    test_case::test_case,
+};
 
 fn read_arc(path: impl AsRef<Path>) {
-    let _: Object = arc::from_read_seek(&mut File::open(path).unwrap()).unwrap();
+    let _: Object = serde_backtrace(arc::from_read_seek(&mut File::open(path).unwrap()).unwrap());
 }
 
 #[test_case("Creatures.arc")]
