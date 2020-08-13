@@ -31,7 +31,15 @@ fn read_arc(path: impl AsRef<Path>) {
 #[test_case("../Audio/Sounds.arc")]
 #[ignore = "requires Titan Quest to be installed"]
 fn legacy(path: impl AsRef<Path>) {
-    read_arc(Path::new(r"C:\Program Files (x86)\Steam\steamapps\common\Titan Quest\Resources").join(path));
+    read_arc(
+        Path::new(r"C:\Program Files (x86)\Steam\steamapps\common\Titan Quest\Resources")
+            .join(path),
+    );
+}
+
+#[test]
+fn dbg() {
+    read_arc(r"C:\Program Files (x86)\Steam\steamapps\common\Titan Quest\Resources\Creatures.arc")
 }
 
 #[test_case("Creatures.arc")]

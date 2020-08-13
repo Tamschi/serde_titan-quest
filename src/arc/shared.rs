@@ -6,7 +6,7 @@ use serde::{de, ser};
 use serde_seeded::{seed, seeded};
 use std::{borrow::Cow, convert::TryInto, fmt::Display, marker::PhantomData};
 
-#[derive(seed, seeded)]
+#[derive(Debug, seed, seeded)]
 pub struct Header {
     #[seeded(literal(b"ARC\0"))]
     magic: (),
@@ -15,7 +15,7 @@ pub struct Header {
     version: u32,
 
     #[seeded(LittleEndian)]
-    pub file_count: u32,
+    pub asset_count: u32,
 
     #[seeded(LittleEndian)]
     pub part_count: u32,
@@ -24,12 +24,15 @@ pub struct Header {
 
     #[seeded(LittleEndian)]
     pub part_info_offset: u32,
+}
+impl Header {
+    pub fn string_offset(&self) -> u32 {
+        self.part_info_offset + self.part_count * PartInfo::SIZE as u32
+    }
 
-    #[seeded(LittleEndian)]
-    pub string_offset: u32,
-
-    #[seeded(LittleEndian)]
-    pub asset_info_offset: u32,
+    pub fn asset_info_offset_from_end(&self) -> u32 {
+        self.asset_count * AssetInfo::SIZE as u32
+    }
 }
 
 #[derive(seed, seeded)]

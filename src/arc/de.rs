@@ -19,7 +19,6 @@ impl<'de, Source: Read + Seek> de::Deserializer<'de> for Deserializer<'de, Sourc
         V: de::Visitor<'de>,
     {
         let start = self.0.seek(SeekFrom::Current(0)).map_err(Error::custom)?;
-
         let header: Header = from_raw_seed(self.0, Header::seed())?;
 
         visitor.visit_map(FilesAccess {
@@ -57,14 +56,13 @@ impl<'de, Source: Read + Seek> de::MapAccess<'de> for FilesAccess<'de, Source> {
     where
         K: de::DeserializeSeed<'de>,
     {
-        if self.i < self.header.file_count {
+        if self.i < self.header.asset_count {
             let asset_info: AssetInfo = from_raw_seed_at(
                 self.source,
                 AssetInfo::seed(),
-                SeekFrom::Start(
-                    self.start
-                        + self.header.asset_info_offset as u64
-                        + self.i as u64 * AssetInfo::SIZE as u64,
+                SeekFrom::End(
+                    -(self.header.asset_info_offset_from_end() as i64)
+                        + self.i as i64 * AssetInfo::SIZE as i64,
                 ),
             )?;
 
@@ -72,7 +70,7 @@ impl<'de, Source: Read + Seek> de::MapAccess<'de> for FilesAccess<'de, Source> {
                 self.source,
                 string(fixed_len(asset_info.name_length as usize), cp1252),
                 SeekFrom::Start(
-                    self.start + self.header.string_offset as u64 + asset_info.name_offset as u64,
+                    self.start + self.header.string_offset() as u64 + asset_info.name_offset as u64,
                 ),
             )?;
 
@@ -91,10 +89,9 @@ impl<'de, Source: Read + Seek> de::MapAccess<'de> for FilesAccess<'de, Source> {
         let asset_info: AssetInfo = from_raw_seed_at(
             self.source,
             AssetInfo::seed(),
-            SeekFrom::Start(
-                self.start
-                    + self.header.asset_info_offset as u64
-                    + (self.i - 1) as u64 * AssetInfo::SIZE as u64,
+            SeekFrom::End(
+                -(self.header.asset_info_offset_from_end() as i64)
+                    + (self.i - 1) as i64 * AssetInfo::SIZE as i64,
             ),
         )?;
 
@@ -133,7 +130,7 @@ impl<'de, Source: Read + Seek> de::MapAccess<'de> for FilesAccess<'de, Source> {
 
         let data: Vec<u8> = Vec::with_capacity(asset_info.asset_length as usize);
         for part in parts {
-            todo!("Read asset parts into data")
+            // todo!("Read asset parts into data")
         }
 
         seed.deserialize(data.into_deserializer())
