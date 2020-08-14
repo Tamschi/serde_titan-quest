@@ -1,4 +1,4 @@
-use raw_seeders::{Literal, LittleEndian};
+use raw_seeders::{Literal, LittleEndian, IEEE754};
 use serde_seeded::{seed, seeded};
 
 #[derive(Debug, seed, seeded)]
@@ -48,15 +48,15 @@ pub struct Frame {
 
 #[derive(Debug, seed, seeded)]
 pub struct Quaternion {
-    #[seeded(LittleEndian)]
+    #[seeded(IEEE754(LittleEndian))]
     i: f32,
 
-    #[seeded(LittleEndian)]
+    #[seeded(IEEE754(LittleEndian))]
     j: f32,
 
-    #[seeded(LittleEndian)]
+    #[seeded(IEEE754(LittleEndian))]
     k: f32,
 
-    #[seeded(LittleEndian)]
+    #[seeded(IEEE754(LittleEndian))]
     w: f32,
 }
