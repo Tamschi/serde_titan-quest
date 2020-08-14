@@ -1,4 +1,4 @@
-use raw_seeders::{Literal, LittleEndian, IEEE754};
+use raw_seeders::{Literal, LittleEndian, IEEE754, Tuple};
 use serde_seeded::{seed, seeded};
 
 #[derive(Debug, seed, seeded)]
@@ -15,8 +15,8 @@ pub struct Animation {
     #[seeded(LittleEndian)]
     fps: u32,
 
-    #[seeded_de(flat_count(bones, *_(frames)))]
-    #[seeded_ser(flat_ser(*_))]
+    #[seeded_de(SeqN(bones, *_(frames)))]
+    #[seeded_ser(Seq(*_))]
     bone_animations: Vec<BoneAnimation>,
 }
 
@@ -26,20 +26,20 @@ pub struct BoneAnimation {
     #[seeded(cp1252(length_prefixed::<u32, _>(LittleEndian)))]
     name: String,
 
-    #[seeded_de(flat_count(frames, *_))]
-    #[seeded_ser(flat_ser(*_))]
+    #[seeded_de(SeqN(frames, *_))]
+    #[seeded_ser(Seq(*_))]
     frames: Vec<Frame>,
 }
 
 #[derive(Debug, seed, seeded)]
 pub struct Frame {
-    #[seeded(flat(LittleEndian))]
+    #[seeded(Tuple(IEEE754(LittleEndian)))]
     offset: [f32; 3],
 
     #[seeded]
     q_1: Quaternion,
 
-    #[seeded(flat(LittleEndian))]
+    #[seeded(Tuple(IEEE754(LittleEndian)))]
     scale: [f32; 3],
 
     #[seeded]
