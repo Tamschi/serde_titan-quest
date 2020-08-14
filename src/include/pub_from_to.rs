@@ -1,4 +1,3 @@
-use super::de;
 use serde::{de::DeserializeSeed, Deserialize, Deserializer};
 use std::{
     io::{Read, Seek},
