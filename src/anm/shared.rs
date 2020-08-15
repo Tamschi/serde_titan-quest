@@ -30,22 +30,23 @@ pub struct BoneAnimation {
     name: String,
 
     #[seeded_de(SeqN(frames, FunctionDeSeeder(Frame::seed as fn(_) -> _)))]
-    #[seeded_ser(Seq(FunctionSerSeeder(Frame::seeded as fn(_) -> _)))]
+    #[seeded_ser(Tuple::of(FunctionSerSeeder(Frame::seeded as fn(_) -> _)))]
     frames: Vec<Frame>,
 
+    #[seeded_de]
     #[seeded_ser(FunctionSerSeeder(Frame::seeded as fn(_) -> _))]
     frame: Frame,
 }
 
 #[derive(Debug, seed, seeded)]
 pub struct Frame {
-    #[seeded(Tuple(IEEE754(LittleEndian)))]
+    #[seeded(Tuple::of(IEEE754(LittleEndian)))]
     offset: [f32; 3],
 
     #[seeded]
     q_1: Quaternion,
 
-    #[seeded(Tuple(IEEE754(LittleEndian)))]
+    #[seeded(Tuple::of(IEEE754(LittleEndian)))]
     scale: [f32; 3],
 
     #[seeded]
