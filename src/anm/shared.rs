@@ -30,7 +30,7 @@ pub struct BoneAnimation {
     name: String,
 
     #[seeded_de(SeqN(frames, FunctionDeSeeder(Frame::seed as fn(_) -> _)))]
-    #[seeded_ser(Tuple::of(FunctionSerSeeder(Frame::seeded as fn(_) -> _)))]
+    #[seeded_ser(Seq(FunctionSerSeeder(Frame::seeded as fn(_) -> _)))]
     frames: Vec<Frame>,
 
     #[seeded_de]
