@@ -1,7 +1,7 @@
 use {
-    fn_t::Function,
-    raw_seeders::{Literal, LittleEndian, Seq, Tuple, TupleN, IEEE754},
+    raw_seeders::{LengthPrefixed, Literal, LittleEndian, Tuple, TupleN, CP1252, IEEE754, SerdeLike},
     serde_seeded::{seed, seeded, FnDeSeeder, FnSerSeeder},
+    std::marker::PhantomData,
 };
 
 #[derive(Debug, seed, seeded)]
@@ -24,8 +24,11 @@ pub struct Animation {
 #[derive(Debug, seed, seeded)]
 #[seed_args(frames: u32)]
 pub struct BoneAnimation {
-    // #[seeded(CP1252(LengthPrefixed::with::<u32, _>(LittleEndian)))]
+    #[seeded(CP1252(LengthPrefixed(PhantomData::<u32>, LittleEndian, SerdeLike)))]
     name: String,
+
+    #[seeded(LengthPrefixed(PhantomData::<u32>, LittleEndian, SerdeLike))]
+    length_prefixed_test: Vec<u8>,
 
     #[seeded_de(TupleN(frames as usize, FnDeSeeder(Frame::seed)))]
     #[seeded_ser(TupleN(*frames as usize, FnSerSeeder(Frame::seeded)))]
