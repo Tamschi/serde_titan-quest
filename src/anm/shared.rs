@@ -1,6 +1,6 @@
 use {
     fn_t::Function,
-    raw_seeders::{Literal, LittleEndian, Seq, Tuple, IEEE754},
+    raw_seeders::{Literal, LittleEndian, Seq, Tuple, TupleN, IEEE754},
     serde_seeded::{seed, seeded, FunctionDeSeeder, FunctionSerSeeder},
 };
 
@@ -18,19 +18,18 @@ pub struct Animation {
     #[seeded(LittleEndian)]
     fps: u32,
 
-    #[seeded_de(SeqN(bones, _.0(self.frames)))]
-    #[seeded_ser(Seq(FunctionSerSeeder(BoneAnimation::seeded as fn(_) -> _)))]
+    #[seeded(SeqN(bones, _<0>(self.frames)))]
     bone_animations: Vec<BoneAnimation>,
 }
 
 #[derive(Debug, seed, seeded)]
 #[seed_args(frames: u32)]
 pub struct BoneAnimation {
-    #[seeded(CP1252(length_prefixed::<u32, _>(LittleEndian)))]
+    #[seeded(CP1252(LengthPrefixed::with::<u32, _>(LittleEndian)))]
     name: String,
 
-    #[seeded_de(SeqN(frames, FunctionDeSeeder(Frame::seed as fn(_) -> _)))]
-    #[seeded_ser(Seq(FunctionSerSeeder(Frame::seeded as fn(_) -> _)))]
+    #[seeded_de(TupleN(frames as usize, FunctionDeSeeder(Frame::seed as fn(_) -> _)))]
+    #[seeded_ser(TupleN(*frames as usize, FunctionSerSeeder(Frame::seeded as fn(_) -> _)))]
     frames: Vec<Frame>,
 
     #[seeded_de]
