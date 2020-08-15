@@ -1,14 +1,14 @@
 use cast::i8;
 use encoding::{all::WINDOWS_1252, DecoderTrap, Encoding as _};
 use enum_ordinalize::Ordinalize;
-use raw_seeders::{literal, LittleEndian};
+use raw_seeders::{Literal, LittleEndian};
 use serde::{de, ser};
 use serde_seeded::{seed, seeded};
 use std::{borrow::Cow, fmt::Display, marker::PhantomData};
 
 #[derive(Debug, seed, seeded)]
 pub struct Header {
-    #[seeded(literal(b"ARC\0"))]
+    #[seeded(Literal(b"ARC\0"))]
     magic: (),
 
     #[seeded(LittleEndian)]

@@ -1,9 +1,9 @@
-use raw_seeders::{literal, LittleEndian};
+use raw_seeders::{Literal, LittleEndian};
 use serde_seeded::{seed, seeded};
 
 #[derive(Debug, seed, seeded)]
 pub struct Header {
-    #[seeded(literal(b"ARZ\0"))]
+    #[seeded(Literal(b"ARZ\0"))]
     magic: (),
 
     #[seeded(LittleEndian)]
