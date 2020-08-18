@@ -1,8 +1,7 @@
 use raw_seeders::{
-	LengthPrefixed, Literal, LittleEndian, SerdeLike, TryAsU32, Tuple, TupleN, CP1252, IEEE754,
+	LengthPrefixed, Literal, LittleEndian, SerdeLike, TryAsU32, Tuple, TupleN, Windows1252, IEEE754,
 };
 use serde_seeded::{seed, seeded, FnDeSeeder, FnSerSeeder};
-use std::marker::PhantomData;
 
 #[derive(Debug, seed, seeded)]
 pub struct Animation {
@@ -22,16 +21,17 @@ pub struct Animation {
 }
 
 #[derive(Debug, seed, seeded)]
-#[seed_args(frames: u32)]
+#[seed_args(frame_count: u32)]
 pub struct BoneAnimation {
-	#[seeded(CP1252(LengthPrefixed(TryAsU32(LittleEndian), SerdeLike)))]
+	#[seeded(Windows1252(LengthPrefixed(TryAsU32(LittleEndian), SerdeLike)))]
 	name: String,
 
 	#[seeded(LengthPrefixed(TryAsU32(LittleEndian), SerdeLike))]
 	length_prefixed_test: Vec<u8>,
 
-	#[seeded_de(TupleN(frames as usize, FnDeSeeder(Frame::seed)))]
-	#[seeded_ser(TupleN(*frames as usize, FnSerSeeder(Frame::seeded)))]
+	#[seeded_de(TupleN(frame_count as usize, FnDeSeeder(Frame::seed)))]
+	//TODO: Pass by value/consume seeder instead when serializing to avoid pointer stuff?
+	#[seeded_ser(TupleN(*frame_count as usize, FnSerSeeder::new(|f| Box::new(Frame::seeded(f)))))]
 	frames: Vec<Frame>,
 
 	#[seeded]
