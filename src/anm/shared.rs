@@ -16,8 +16,10 @@ pub struct Animation {
 
 	#[seeded(LittleEndian)]
 	fps: u32,
-	// #[seeded(SeqN(bones, _<0>(self.frames)))]
-	// bone_animations: Vec<BoneAnimation>,
+
+	#[seeded_de(TupleN(bones as usize, FnDeSeeder(|| BoneAnimation::seed(frames))))]
+	#[seeded_ser(TupleN(*bones as usize, FnSerSeeder::new(|b| Box::new(BoneAnimation::seeded(b, *frames)))))]
+	bone_animations: Vec<BoneAnimation>,
 }
 
 #[derive(Debug, seed, seeded)]
@@ -26,16 +28,10 @@ pub struct BoneAnimation {
 	#[seeded(Windows1252(LengthPrefixed(TryAsU32(LittleEndian), SerdeLike)))]
 	name: String,
 
-	#[seeded(LengthPrefixed(TryAsU32(LittleEndian), SerdeLike))]
-	length_prefixed_test: Vec<u8>,
-
 	#[seeded_de(TupleN(frame_count as usize, FnDeSeeder(Frame::seed)))]
 	//TODO: Pass by value/consume seeder instead when serializing to avoid pointer stuff?
 	#[seeded_ser(TupleN(*frame_count as usize, FnSerSeeder::new(|f| Box::new(Frame::seeded(f)))))]
 	frames: Vec<Frame>,
-
-	#[seeded]
-	frame: Frame,
 }
 
 #[derive(Debug, seed, seeded)]
