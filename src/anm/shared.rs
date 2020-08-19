@@ -29,7 +29,7 @@ pub struct BoneAnimation {
 	name: String,
 
 	#[seeded_de(TupleN(frame_count as usize, FnDeSeeder(Frame::seed)))]
-	//TODO: Pass by value/consume seeder instead when serializing to avoid pointer stuff?
+	//TODO: Pass by value/consume seeder instead when serializing to avoid reference discrepancy?
 	#[seeded_ser(TupleN(*frame_count as usize, FnSerSeeder::new(|f| Box::new(Frame::seeded(f)))))]
 	frames: Vec<Frame>,
 }

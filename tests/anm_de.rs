@@ -1,9 +1,8 @@
-use log::error;
+use log::{error, info};
 use serde_titan_quest::anm::de::animation_from_read;
 use std::{
 	fs::File,
-	io::Seek as _,
-	io::{BufReader, SeekFrom},
+	io::{BufReader, Seek as _, SeekFrom},
 	path::Path,
 };
 
@@ -17,7 +16,7 @@ fn read_animation(path: impl AsRef<Path>) {
 			file.seek(SeekFrom::Current(0)).unwrap()
 		);
 	}
-	// dbg!(animation).unwrap();
+	info!("{:#?}", animation);
 }
 
 #[test]

@@ -1,7 +1,7 @@
 use cast::i8;
 use encoding::{all::WINDOWS_1252, DecoderTrap, Encoding as _};
 use enum_ordinalize::Ordinalize;
-use raw_seeders::{Literal, LittleEndian};
+use raw_seeders::{Literal, LittleEndian, SerdeLike};
 use serde::{de, ser};
 use serde_seeded::{seed, seeded};
 use std::{borrow::Cow, fmt::Display, marker::PhantomData};
@@ -20,6 +20,7 @@ pub struct Header {
 	#[seeded(LittleEndian)]
 	pub part_count: u32,
 
+	#[seeded(SerdeLike)]
 	unknown: [u8; 8],
 
 	#[seeded(LittleEndian)]
@@ -64,6 +65,7 @@ pub struct AssetInfo {
 	#[seeded(LittleEndian)]
 	pub asset_length: u32,
 
+	#[seeded(SerdeLike)]
 	unknown: [u8; 12],
 
 	#[seeded(LittleEndian)]
