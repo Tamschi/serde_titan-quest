@@ -1,3 +1,4 @@
+use log::{debug, info};
 use serde::de;
 use serde_backtrace::serde_backtrace;
 use serde_titan_quest::arc;
@@ -5,6 +6,7 @@ use std::{fs::File, io::BufReader, path::Path};
 use test_case::test_case;
 
 fn read_arc(path: impl AsRef<Path>) {
+	stderrlog::new().verbosity(3).init().ok();
 	let _: () = serde_backtrace(
 		arc::from_read_seek_seed(
 			&mut BufReader::new(File::open(&path).unwrap()),
@@ -97,7 +99,9 @@ impl<'de, P> de::Visitor<'de> for Visitor<P> {
 			let k: String = k;
 			let data: Vec<u8> = map.next_value()?;
 			if data.is_empty() {
-				println!("{:?}", (data.len(), k));
+				info!("{:?} ({} bytes)", k, data.len());
+			} else {
+				debug!("{:?} ({} bytes)", k, data.len());
 			}
 		}
 

@@ -22,6 +22,6 @@ fn read_animation(path: impl AsRef<Path>) {
 #[test]
 #[ignore = r"Requires an animation file at C:\modding\tigerman_walk.anm."]
 fn animation() {
-	stderrlog::new().verbosity(3).init().unwrap();
+	stderrlog::new().verbosity(3).init().ok();
 	read_animation(r"C:\modding\tigerman_walk.anm")
 }
